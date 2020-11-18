@@ -7,7 +7,10 @@ https://e-trust.gosuslugi.ru/#/portal/accreditation/accreditedcalist
 утилиты certmgr, входящей в комплект поставки криптопровайдера КриптоПро.
 
 ## Установка
-`composer install`
+```
+git clone git@github.com:nikserg/caroot-updater.git .
+composer install
+```
 
 Работает только в Unix-системах.
 
