@@ -92,7 +92,6 @@ try {
         }
     }
 
-} catch
-(Exception $e) {
+} catch (Exception $e) {
     echo Color::RED, 'Ошибка ' . $e->getMessage() . PHP_EOL . $e->getTraceAsString() . PHP_EOL;
 }
