@@ -8,7 +8,7 @@ https://e-trust.gosuslugi.ru/#/portal/accreditation/accreditedcalist
 
 ## Установка
 ```
-git clone git@github.com:nikserg/caroot-updater.git .
+git clone https://github.com/nikserg/caroot-updater.git .
 composer install
 ```
 
