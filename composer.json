@@ -1,0 +1,9 @@
+{
+    "name": "nikserg/caroot-updater",
+    "type": "project",
+    "require": {
+        "guzzlehttp/guzzle": "^7.2",
+        "codedungeon/php-cli-colors": "^1.11",
+        "ext-simplexml": "*"
+    }
+}
