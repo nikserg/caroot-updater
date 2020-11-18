@@ -1,3 +1,7 @@
+[![Build Status](https://scrutinizer-ci.com/g/nikserg/caroot-updater/badges/build.png?b=main)](https://scrutinizer-ci.com/g/nikserg/caroot-updater/build-status/main)
+[![Code Intelligence Status](https://scrutinizer-ci.com/g/nikserg/caroot-updater/badges/code-intelligence.svg?b=main)](https://scrutinizer-ci.com/code-intelligence)
+
+
 # Обновление доверенных сертификатов КриптоПро
 
 Скрипт для обновления доверенных корневых сертификатов с сайта 
