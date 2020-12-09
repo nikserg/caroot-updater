@@ -5,6 +5,8 @@ use GuzzleHttp\Client;
 
 require_once "vendor/autoload.php";
 
+const XML_URL = 'https://e-trust.gosuslugi.ru/app/scc/portal/api/v1/portal/ca/getxml';
+
 $options = getopt("hve:", ['help', 'verbose', 'executable:']);
 if (isset($options['h']) || isset($options['help'])) {
     echo Color::GREEN, 'Загрузка корневых сертификатов с Госуслуг', Color::RESET, PHP_EOL;
@@ -40,40 +42,38 @@ try {
     //Скачиваем список сертов
     $client = new \GuzzleHttp\Client();
 
-    echo Color::CYAN, 'Получаем XML по адресу https://e-trust.gosuslugi.ru/app/scc/portal/api/v1/portal/ca/getxml', Color::RESET, PHP_EOL;
+    echo Color::CYAN, 'Получаем XML по адресу '.XML_URL, Color::RESET, PHP_EOL;
 
-    $html = $client->get('https://e-trust.gosuslugi.ru/app/scc/portal/api/v1/portal/ca/getxml')->getBody()->getContents();
+    $html = $client->get(XML_URL)->getBody()->getContents();
 
     if (!$html) {
         throw new Exception('Получено пустое содержимое списка сертификатов');
     }
 
     echo Color::GREEN, 'Ответ получен, ' . strlen($html) . ' байт', Color::RESET, PHP_EOL;
-    $xml = new SimpleXMLElement($html);
-    $ucs = $xml->УдостоверяющийЦентр;
-    $total = $ucs->count();
-    echo Color::GREEN, 'Всего УЦ ' . $total, Color::RESET, PHP_EOL;
+    $rootCertificatesCollection = new \nikserg\CarootUpdater\RootCertificatesCollection($html);
+
+    echo Color::GREEN, 'Всего УЦ ' . $rootCertificatesCollection->getRootCertificatesCount(), Color::RESET, PHP_EOL;
     $index = 1;
 
     //Загружаем кореневые каждого УЦ
-    foreach ($ucs as $child) {
+    foreach ($rootCertificatesCollection as $child) {
 
-        echo Color::LIGHT_BLUE, $index++ . '/' . $total . ' ' . $child->Название, Color::RESET, PHP_EOL;
-        if ($child->СтатусАккредитации->Статус == 'Действует') {
+        echo Color::LIGHT_BLUE, $index++ . '/' . $rootCertificatesCollection->getRootCertificatesCount() . ' ' . $child->getName(), Color::RESET, PHP_EOL;
+        if ($child->getStatus() == \nikserg\CarootUpdater\RootUC::STATUS_ACTIVE) {
             echo Color::GREEN, '   Действует', Color::RESET, PHP_EOL;
         } else {
-            echo Color::RED, '   ' . $child->СтатусАккредитации->Статус, Color::RESET, PHP_EOL;
+            echo Color::RED, '   ' . $child->getStatus(), Color::RESET, PHP_EOL;
         }
 
-        $certificates = $child->ПрограммноАппаратныеКомплексы->ПрограммноАппаратныйКомплекс->КлючиУполномоченныхЛиц->Ключ->Сертификаты->ДанныеСертификата;
-        foreach ($certificates as $certificate) {
-            echo Color::CYAN, '   Отпечаток: ', $certificate->Отпечаток, Color::RESET, PHP_EOL;
-            echo Color::CYAN, '   С: ', $certificate->ПериодДействияС, Color::RESET, PHP_EOL;
-            echo Color::CYAN, '   По: ', $certificate->ПериодДействияДо, Color::RESET, PHP_EOL;
+        foreach ($child->getCertificates() as $certificate) {
+            echo Color::CYAN, '   Отпечаток: ', $certificate->getThumbprint(), Color::RESET, PHP_EOL;
+            echo Color::CYAN, '   С: ', $certificate->getPeriodFrom()->format('d.m.Y H:i:s'), Color::RESET, PHP_EOL;
+            echo Color::CYAN, '   По: ', $certificate->getPeriodTo()->format('d.m.Y H:i:s'), Color::RESET, PHP_EOL;
 
             //Сохраняем содержимое в файл
             $filename = tempnam(sys_get_temp_dir(), 'caroot');
-            file_put_contents($filename, $certificate->Данные);
+            file_put_contents($filename, $certificate->getContent());
 
             //Устанавливаем сертификат
             $command = 'yes "o" | ' . $cryptcpExec . ' -inst -store uRoot -file ' . $filename;

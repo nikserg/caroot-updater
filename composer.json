@@ -5,5 +5,14 @@
         "guzzlehttp/guzzle": "^7.2",
         "codedungeon/php-cli-colors": "^1.11",
         "ext-simplexml": "*"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "nikserg\\CarootUpdater\\": ""
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
     }
 }
