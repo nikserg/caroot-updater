@@ -1,5 +1,5 @@
-[![Build Status](https://scrutinizer-ci.com/g/nikserg/caroot-updater/badges/build.png?b=main)](https://scrutinizer-ci.com/g/nikserg/caroot-updater/build-status/main)
-[![Code Intelligence Status](https://scrutinizer-ci.com/g/nikserg/caroot-updater/badges/code-intelligence.svg?b=main)](https://scrutinizer-ci.com/code-intelligence)
+[![Build Status](https://travis-ci.org/nikserg/caroot-updater.svg?branch=main)](https://travis-ci.org/nikserg/caroot-updater)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nikserg/caroot-updater/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/nikserg/caroot-updater/?branch=main)
 
 
 # Обновление доверенных сертификатов КриптоПро
